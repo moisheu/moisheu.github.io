@@ -1,20 +1,290 @@
-<html lang = "en">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emi A. Lee</title>
+  <meta name="description" content="Emi A. Lee — human-AI interaction, trust in intelligent systems, and machine learning for behavioral modeling.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='30' cy='35' r='12' fill='%231c5cab'/><circle cx='70' cy='60' r='9' fill='%23199e70'/><circle cx='45' cy='78' r='7' fill='%23c98500'/><line x1='30' y1='35' x2='70' y2='60' stroke='%23888' stroke-width='3'/><line x1='70' y1='60' x2='45' y2='78' stroke='%23888' stroke-width='3'/></svg>">
+</head>
+<body>
 
-    <head>  
-        <meta charset="UTF-8">
-        <meta name = "viewport" content = "width=device-width", initial-scale=1.0">
-        <title>Document</title>   
-        <link rel = "stylesheet" href="style.css">
-    </head>
+  <header class="site-nav">
+    <a class="brand" href="#about">Emi&nbsp;A.&nbsp;Lee</a>
+    <nav aria-label="Sections">
+      <a href="#news">News</a>
+      <a href="#publications">Publications</a>
+      <a href="#research">Research</a>
+      <a href="#experience">Experience</a>
+      <a href="#leadership">Leadership</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button id="view-toggle" type="button" aria-pressed="false" title="Toggle graph view">
+      <svg class="ico-graph" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="6" cy="6" r="3"/><circle cx="18" cy="10" r="3"/><circle cx="9" cy="19" r="3"/>
+        <line x1="8.6" y1="7.5" x2="15.4" y2="9.2"/><line x1="7" y1="8.8" x2="8.2" y2="16.3"/>
+      </svg>
+      <svg class="ico-list" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>
+      </svg>
+      <span class="toggle-label">Graph</span>
+    </button>
+  </header>
 
-    <body>
-        <h1>Under construction</h1>
-    </body>
-    </html>
+  <main id="standard-view">
 
+    <!-- ============ ABOUT ============ -->
+    <section id="about" data-graph="About">
+      <div class="hero">
+        <div class="portrait"><img src="portrait.png" alt="Emi A. Lee"></div>
+        <div class="hero-text">
+          <h1>Emi A. Lee</h1>
+          <p class="role">Machine learning researcher, UCSD Design Lab · Data Engineer, Fidelity Investments</p>
+          <p class="bio">
+            I work on <em>human–AI interaction</em>: how people come to trust and make decisions
+            with intelligent systems, and how machine learning can model the imperfect,
+            human-generated signals — facial expressions, biometrics, behavior — that shape those
+            interactions. My interests span behavioral modeling, applied ML in cognitive and
+            social domains, and predictive modeling with messy real-world data.
+          </p>
+          <p class="bio">
+            I am a research assistant in the <a href="https://hxi.ucsd.edu/">Human eXtended
+            Intelligence</a> group at the UCSD Design Lab (PI Nadir Weibel), where I build ML
+            pipelines that predict social signals in doctor–patient interactions. By day I am a
+            data engineer at Fidelity Investments.
+          </p>
+          <ul class="links-row">
+            <li><a href="mailto:eal003@ucsd.edu">Email</a></li>
+            <li><span class="link-disabled" aria-disabled="true" title="Coming soon">CV</span></li>
+            <li><a href="https://linkedin.com/in/eal003">LinkedIn</a></li>
+            <li><a href="https://github.com/Moisheu">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+      <h3 class="subhead">Education</h3>
+      <ul class="item-list">
+        <li id="edu-ucsd" data-node="UC San Diego — B.S.">
+          <span class="item-title">University of California, San Diego</span>
+          <span class="item-sub">B.S. Cognitive Science, Spec. in Machine Learning &amp; Neural Computation · 2020 – 2024</span>
+        </li>
+        <li id="edu-kyoto" data-node="Kyoto University — Exchange">
+          <span class="item-title">Kyoto University</span>
+          <span class="item-sub">Study Abroad Exchange Program · 2023 – 2024</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ============ NEWS ============ -->
+    <section id="news" data-graph="News">
+      <h2>News</h2>
+      <ul class="news-list">
+        <li id="news-2025-12" data-node="Rejoined Design Lab (Dec 2025)" data-links="proj-social-signals">
+          <time datetime="2025-12">Dec 2025</time>
+          <span>Rejoined the UCSD Design Lab as a research assistant working on social signal prediction in clinical interactions.</span>
+        </li>
+        <li id="news-2025-08" data-node="Joined Fidelity (Aug 2025)" data-links="exp-fidelity">
+          <time datetime="2025-08">Aug 2025</time>
+          <span>Joined Fidelity Investments as a data engineer on the Employee Compliance team.</span>
+        </li>
+        <li id="news-2025-04" data-node="CHI '25 paper (Apr 2025)" data-links="pub-chi25">
+          <time datetime="2025-04">Apr 2025</time>
+          <span>Our paper on predicting trust in autonomous vehicles appeared at <em>CHI '25</em> in Yokohama.</span>
+        </li>
+        <li id="news-2024-09" data-node="Graduated UCSD (Sep 2024)" data-links="edu-ucsd">
+          <time datetime="2024-09">Sep 2024</time>
+          <span>Graduated from UC San Diego with a B.S. in Cognitive Science (Machine Learning &amp; Neural Computation).</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ============ PUBLICATIONS ============ -->
+    <section id="publications" data-graph="Publications">
+      <h2>Publications</h2>
+
+      <h3 class="year">In review</h3>
+      <ol class="pub-list">
+        <li id="pub-eics" data-node="Now You See Me (in review)" data-links="proj-affective-gaming">
+          <span class="pub-title">Now You See Me: Exploring Affect Representations in Multiplayer FPS Games and their Impact on Player Experience</span>
+          <span class="pub-authors">Bhide, R., <strong>Lee, E.</strong>, Molina, J., Weibel, N.</span>
+          <span class="pub-venue">Submitted to EICS</span>
+        </li>
+      </ol>
+
+      <h3 class="year">2025</h3>
+      <ol class="pub-list">
+        <li id="pub-chi25" data-node="Predicting Trust in AVs, CHI '25" data-links="proj-av-trust">
+          <span class="pub-title">Predicting Trust in Autonomous Vehicles: Modeling Young Adult Psychosocial Traits, Risk-Benefit Attitudes, and Driving Factors with Machine Learning</span>
+          <span class="pub-authors">Kaufman, R., <strong>Lee, E.</strong>, Bedmutha, M., Kirsh, D., Weibel, N.</span>
+          <span class="pub-venue">CHI '25: ACM Conference on Human Factors in Computing Systems</span>
+          <span class="pub-links"><a href="https://doi.org/10.1145/3706598.3713188">DOI</a></span>
+        </li>
+      </ol>
+
+      <h3 class="year">2024</h3>
+      <ol class="pub-list">
+        <li id="pub-agile24" data-node="ML Energy Modeling, 2024" data-links="proj-energy">
+          <span class="pub-title">Making Energy Modeling Faster: A Machine Learning-Based Approach to Emulate Physics-Based Simulation for Energy Consumption Prediction</span>
+          <span class="pub-authors"><strong>Lee, E.</strong>, Park, J., Friesen, J.</span>
+          <span class="pub-venue">Agile Electrification</span>
+          <span class="pub-links"><a href="https://agileelectrification.org/playbook/predicting-the-impact-of-home-electrification">Whitepaper</a></span>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ============ RESEARCH ============ -->
+    <section id="research" data-graph="Research">
+      <h2>Research</h2>
+      <div class="project-grid">
+        <article class="project" id="proj-social-signals" data-node="Social Signal Prediction">
+          <h3>Social Signal Prediction</h3>
+          <p class="project-meta">UCSD Design Lab · HXI · 2025 – present</p>
+          <p>
+            End-to-end ML pipeline predicting social signals — warmth, empathy, dominance —
+            from facial Action Unit time-series in 108 doctor–patient clinical interactions,
+            with a three-tier feature architecture (255 AU features) evaluated under
+            leave-one-group-out cross-validation.
+          </p>
+        </article>
+        <article class="project" id="proj-av-trust" data-node="Trust in Autonomous Vehicles">
+          <h3>Trust in Autonomous Vehicles</h3>
+          <p class="project-meta">UCSD Design Lab · HXI · 2023 – 2024</p>
+          <p>
+            How psychosocial traits and risk-benefit attitudes shape trust in autonomously
+            powered vehicles, studied through VR/XR. Built the ML framework for evaluation,
+            testing, and ablation across 7 models and 1,450+ participants; published at CHI '25.
+          </p>
+        </article>
+        <article class="project" id="proj-affective-gaming" data-node="Affective Gaming">
+          <h3>Affective Gaming</h3>
+          <p class="project-meta">UCSD Design Lab · 2023</p>
+          <p>
+            Affect representations in multiplayer FPS games and their impact on player
+            experience, strategy, and stress — with ML models for biosensing and valence
+            detection from heart rate, blood pressure, and galvanic skin response.
+          </p>
+        </article>
+        <article class="project" id="proj-energy" data-node="ML Emulation of Energy Models">
+          <h3>ML Emulation of Energy Models</h3>
+          <p class="project-meta">Agile Electrification · 2023 – 2024</p>
+          <p>
+            Machine learning surrogates that emulate slow physics-based simulation for energy
+            consumption prediction, plus geocoding and location-verification tooling; culminated
+            in an industry-facing whitepaper.
+          </p>
+        </article>
+        <article class="project" id="proj-zenetic" data-node="Zenetic Inter-Cultural Computing">
+          <h3>Zenetic Inter-Cultural Computing</h3>
+          <p class="project-meta">Kyoto University · Prof. Naoko Tosa · 2023 – 2024</p>
+          <p>
+            Remastered prototype of the Zenetic Computing project: generative neural models that
+            interactively build narratives on Japanese art forms in the Koan literary tradition,
+            demoed for Smithsonian curators.
+          </p>
+        </article>
+        <article class="project" id="proj-clinical-nlp" data-node="Clinical Attrition NLP">
+          <h3>Clinical Attrition NLP</h3>
+          <p class="project-meta">Scripps Research · NIH All of Us · 2022</p>
+          <p>
+            NLP and sentiment-analysis pipelines identifying factors behind clinical subject
+            attrition in longevity science and precision medicine, presented to the Scripps data
+            science team.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ EXPERIENCE ============ -->
+    <section id="experience" data-graph="Experience">
+      <h2>Experience</h2>
+      <ul class="item-list">
+        <li id="exp-fidelity" data-node="Fidelity — Data Engineer">
+          <span class="item-title">Fidelity Investments</span>
+          <span class="item-sub">Data Engineer, Employee Compliance · Aug 2025 – present</span>
+          <span class="item-desc">Modernizing legacy compliance systems into SQL-driven workflows with PL/SQL, Oracle, and Azure Data Factory.</span>
+        </li>
+        <li id="exp-balto" data-node="Balto Energy — DS Intern">
+          <span class="item-title">Balto Energy</span>
+          <span class="item-sub">Data Science, Development &amp; Analytics Intern · Aug 2024 – Jun 2025</span>
+          <span class="item-desc">AWS Lambda / Step Functions pipelines orchestrating millions of solar-scenario simulations; Snowflake data infrastructure with geospatial and weather APIs.</span>
+        </li>
+        <li id="exp-navxcom" data-node="NavXCom — ML Engineer">
+          <span class="item-title">NavXCom (NASA Contractor)</span>
+          <span class="item-sub">Data Scientist / Machine Learning Engineer · Apr 2024 – Jan 2025</span>
+          <span class="item-desc">RL and neural architectures for an autonomous lunar cognitive network; validated at NASA Marshall Space Flight Center with lunar-regolith field tests.</span>
+        </li>
+        <li id="exp-fidelity-intern" data-node="Fidelity — DE Intern">
+          <span class="item-title">Fidelity Investments</span>
+          <span class="item-sub">Data Engineering Intern, Fraud Investigation Data Squad · Jun 2024 – Aug 2024</span>
+          <span class="item-desc">RESTful AnySQL API and Python library for querying across federated databases (Oracle DB2, Snowflake, Denodo).</span>
+        </li>
+        <li id="exp-dl-nlp" data-node="Design Lab — NLP Intern">
+          <span class="item-title">UCSD Design Lab</span>
+          <span class="item-sub">NLP Data Science Intern · Jun 2023 – Aug 2023</span>
+          <span class="item-desc">Sentiment analysis with NLP and LLMs to identify student research-attrition factors from survey feedback.</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ============ LEADERSHIP & AWARDS ============ -->
+    <section id="leadership" data-graph="Leadership">
+      <h2>Leadership &amp; Awards</h2>
+      <ul class="item-list">
+        <li id="lead-lspace" data-node="NASA L'SPACE — Project Manager">
+          <span class="item-title">NASA L'SPACE Mission Concept Academy</span>
+          <span class="item-sub">Student Project Manager · 2023</span>
+          <span class="item-desc">Led a team of 12 through a simulated full mission lifecycle under strict schedule and customer constraints.</span>
+        </li>
+        <li id="lead-acm" data-node="ACM at UCSD — Marketing Director">
+          <span class="item-title"><a href="https://acmucsd.com/">UCSD Association for Computing Machinery</a></span>
+          <span class="item-sub">Marketing Director · 2022 – 2023</span>
+          <span class="item-desc">Led the marketing team, exceeding quarterly attendance and retention metrics by 30%.</span>
+        </li>
+        <li id="lead-foreach" data-node="ForEach — PR Lead">
+          <span class="item-title">UCSD ForEach</span>
+          <span class="item-sub">Public Relations Lead, Logistics Co-Lead · 2021 – 2022</span>
+          <span class="item-desc">Marketing, PR, and logistics for Triton Hacks, reaching 20+ high schools across San Diego County.</span>
+        </li>
+        <li id="lead-leap" data-node="Fidelity LEAP Alumni">
+          <span class="item-title">Fidelity LEAP Alumni Association</span>
+          <span class="item-sub">Committee Member · 2025 – present</span>
+        </li>
+      </ul>
+      <h3 class="subhead">Honors</h3>
+      <ul class="awards">
+        <li>Provost Honors, Eleanor Roosevelt College</li>
+        <li>UCSD Design Lab Summer Research Fellowship</li>
+        <li>UCSD Design Lab SPUR Contributor Fellowship</li>
+      </ul>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section id="contact" data-graph="Contact">
+      <h2>Contact</h2>
+      <p>
+        The fastest way to reach me is email:
+        <a href="mailto:eal003@ucsd.edu">eal003@ucsd.edu</a>. I am also on
+        <a href="https://linkedin.com/in/eal003">LinkedIn</a> and
+        <a href="https://github.com/Moisheu">GitHub</a>.
+      </p>
+      <p class="muted">UCSD Design Lab · San Diego, CA</p>
+    </section>
+
+    <footer>
+      <p>© 2026 Emi A. Lee · Built by hand, no framework · <button type="button" class="linklike" data-open-graph>view as graph</button></p>
+    </footer>
+  </main>
+
+  <!-- ============ GRAPH VIEW ============ -->
+  <div id="graph-view" hidden>
+    <canvas id="graph-canvas" aria-label="Interactive site map. Drag nodes, scroll to zoom, click a node to open its page."></canvas>
+    <div class="graph-hint" aria-hidden="true">drag to move · scroll to zoom · click a node to visit</div>
+    <ul class="graph-legend" aria-hidden="true"></ul>
+  </div>
+
+  <script src="main.js"></script>
+</body>
 </html>
-
-
-
-
-
