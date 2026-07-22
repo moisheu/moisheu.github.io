@@ -172,8 +172,12 @@ a:hover { color: var(--accent-hover); text-decoration: underline; text-underline
 .hero {
   display: flex;
   gap: 2rem;
-  align-items: flex-start;
+  align-items: center;
 }
+.hero-head { min-width: 0; }
+.hero-head h1 { margin: 0; }
+.hero-head .role { margin: 0.4rem 0 0; }
+.hero + .bio { margin-top: 1.75rem; }
 
 .portrait {
   flex: 0 0 140px;
@@ -207,9 +211,20 @@ a:hover { color: var(--accent-hover); text-decoration: underline; text-underline
   font-size: 0.88rem;
   font-weight: 500;
 }
+.links-row a,
+.links-row .link-disabled {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.34em;
+}
+.links-row svg {
+  width: 0.95em;
+  height: 0.95em;
+  flex-shrink: 0;
+}
 
 @media (max-width: 620px) {
-  .hero { flex-direction: column; gap: 1.25rem; }
+  .hero { flex-direction: column; gap: 1.25rem; align-items: flex-start; }
   .portrait { flex-basis: auto; width: 120px; height: 120px; }
 }
 
