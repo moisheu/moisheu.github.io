@@ -383,8 +383,6 @@
   // pre-settle so the graph doesn't fly apart on first open
   for (let i = 0; i < 200; i++) tick();
 
-  let saved = null;
-  try { saved = localStorage.getItem("view"); } catch (_) {}
+  // Always default to the standard view; only open graph via an explicit #graph link.
   if (location.hash === "#graph") setView("graph", false);
-  else if (saved === "graph" && !location.hash) setView("graph", false);
 })();
