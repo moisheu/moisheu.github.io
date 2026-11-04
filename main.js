@@ -77,6 +77,16 @@
   const neighbors = new Map(nodes.map((n) => [n, new Set()]));
   edges.forEach(({ a, b }) => { neighbors.get(a).add(b); neighbors.get(b).add(a); });
 
+  /* ---------- group filters (toggled from the legend) ---------- */
+
+  const hiddenGroups = new Set();
+  const isVisible = (n) => n.kind === "home" || !hiddenGroups.has(n.group);
+  let active = nodes, activeEdges = edges;
+  function refreshActive() {
+    active = nodes.filter(isVisible);
+    activeEdges = edges.filter((e) => isVisible(e.a) && isVisible(e.b));
+  }
+
   /* ---------- simulation ---------- */
 
   const REPULSION = 9000;
@@ -89,10 +99,10 @@
 
   function tick() {
     // pairwise repulsion (n is small; O(n^2) is fine)
-    for (let i = 0; i < nodes.length; i++) {
-      const a = nodes[i];
-      for (let j = i + 1; j < nodes.length; j++) {
-        const b = nodes[j];
+    for (let i = 0; i < active.length; i++) {
+      const a = active[i];
+      for (let j = i + 1; j < active.length; j++) {
+        const b = active[j];
         let dx = a.x - b.x, dy = a.y - b.y;
         let d2 = dx * dx + dy * dy;
         if (d2 < 1) { dx = Math.random() - 0.5; dy = Math.random() - 0.5; d2 = 1; }
@@ -104,7 +114,7 @@
       }
     }
     // springs along edges
-    for (const { a, b, rest } of edges) {
+    for (const { a, b, rest } of activeEdges) {
       const dx = b.x - a.x, dy = b.y - a.y;
       const d = Math.sqrt(dx * dx + dy * dy) || 1;
       const f = (d - rest) * SPRING * alpha;
@@ -113,7 +123,7 @@
       b.vx -= fx; b.vy -= fy;
     }
     // gentle pull to the origin + integrate
-    for (const n of nodes) {
+    for (const n of active) {
       n.vx -= n.x * GRAVITY * alpha;
       n.vy -= n.y * GRAVITY * alpha;
       n.vx *= DAMPING; n.vy *= DAMPING;
@@ -146,7 +156,7 @@
   function nodeAt(px, py) {
     const [wx, wy] = toWorld(px, py);
     let best = null, bestD = Infinity;
-    for (const n of nodes) {
+    for (const n of active) {
       const d = Math.hypot(n.x - wx, n.y - wy);
       if (d < n.r + 6 / scale && d < bestD) { best = n; bestD = d; }
     }
@@ -166,7 +176,7 @@
 
     // edges
     ctx.lineWidth = 1 / scale;
-    for (const { a, b } of edges) {
+    for (const { a, b } of activeEdges) {
       const hi = focus && (a === focus || b === focus);
       ctx.strokeStyle = hi ? EDGE_HI : EDGE_COLOR;
       ctx.globalAlpha = focus && !hi ? 0.25 : 1;
@@ -177,7 +187,7 @@
     }
 
     // nodes
-    for (const n of nodes) {
+    for (const n of active) {
       const active = !focus || n === focus || near.has(n);
       ctx.globalAlpha = active ? 1 : 0.18;
       if (n === focus) {
@@ -197,7 +207,7 @@
     // labels: hubs always; leaves fade in with zoom or focus
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
-    for (const n of nodes) {
+    for (const n of active) {
       const isFocusish = focus && (n === focus || near.has(n));
       let a1;
       if (n.kind === "leaf") {
@@ -303,7 +313,7 @@
   let fitted = false;
   function fitToView() {
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    for (const n of nodes) {
+    for (const n of active) {
       minX = Math.min(minX, n.x); maxX = Math.max(maxX, n.x);
       minY = Math.min(minY, n.y); maxY = Math.max(maxY, n.y);
     }
@@ -328,6 +338,7 @@
     if (graph) {
       resize();
       if (!fitted) { fitToView(); fitted = true; }
+      showTip();
       alpha = Math.max(alpha, 0.6);
       if (!rafId) loop();
     } else if (rafId) {
@@ -374,8 +385,50 @@
     const dot = document.createElement("i");
     dot.style.setProperty("--dot", GROUP_COLORS[sec.id] || "#888");
     li.append(dot, sec.dataset.graph);
+    li.tabIndex = 0;
+    li.setAttribute("role", "button");
+    li.setAttribute("aria-pressed", "true");
+    li.title = "Click to hide or show this group";
+    const toggleGroup = () => {
+      const off = !hiddenGroups.has(sec.id);
+      if (off) hiddenGroups.add(sec.id); else hiddenGroups.delete(sec.id);
+      li.classList.toggle("off", off);
+      li.setAttribute("aria-pressed", String(!off));
+      refreshActive();
+      hoverNode = null;
+      alpha = Math.max(alpha, 0.5);
+      fitToView();
+      dismissTip();
+    };
+    li.addEventListener("click", toggleGroup);
+    li.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleGroup(); }
+    });
     legend.append(li);
   });
+
+  // one-time hint that the legend filters the graph
+  const tip = document.querySelector(".graph-tip");
+  let tipTimer = null;
+  function dismissTip() {
+    if (!tip || tip.hidden) return;
+    tip.hidden = true;
+    clearTimeout(tipTimer);
+    try { localStorage.setItem("graph-tip-seen", "1"); } catch (_) {}
+  }
+  function showTip() {
+    if (!tip) return;
+    let seen = false;
+    try { seen = localStorage.getItem("graph-tip-seen") === "1"; } catch (_) {}
+    if (seen) return;
+    tip.hidden = false;
+    // sit just under the key on wide screens; CSS places it above the key on phones
+    tip.style.top = window.matchMedia("(min-width: 621px)").matches
+      ? `${legend.offsetTop + legend.offsetHeight + 10}px` : "";
+    clearTimeout(tipTimer);
+    tipTimer = setTimeout(dismissTip, 9000);
+  }
+  if (tip) tip.querySelector(".graph-tip-close").addEventListener("click", dismissTip);
 
   /* ---------- init ---------- */
 

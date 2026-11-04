@@ -334,7 +334,11 @@
   <div id="graph-view" hidden>
     <canvas id="graph-canvas" aria-label="Interactive site map. Drag nodes, scroll to zoom, click a node to open its page."></canvas>
     <div class="graph-hint" aria-hidden="true"><span class="hint-mouse">drag to move · scroll to zoom · click a node to visit</span><span class="hint-touch">drag to move · pinch to zoom · tap a node to visit</span></div>
-    <ul class="graph-legend" aria-hidden="true"></ul>
+    <ul class="graph-legend" aria-label="Filter groups"></ul>
+    <div class="graph-tip" role="status" hidden>
+      <span>Tip: click a group in the key to hide or show its nodes.</span>
+      <button type="button" class="graph-tip-close" aria-label="Dismiss tip">&times;</button>
+    </div>
   </div>
 
   <script src="main.js"></script>
