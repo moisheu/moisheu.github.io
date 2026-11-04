@@ -58,17 +58,17 @@
 
   document.querySelectorAll("section[data-graph]").forEach((sec) => {
     const hub = addNode(sec.id, sec.dataset.graph, sec.id, "hub", sec);
-    addEdge(home, hub, 160);
+    addEdge(home, hub, 230);
     sec.querySelectorAll("[data-node]").forEach((el, i) => {
       if (!el.id) el.id = `${sec.id}-item-${i}`;
-      addEdge(hub, addNode(el.id, el.dataset.node, sec.id, "leaf", el), 85);
+      addEdge(hub, addNode(el.id, el.dataset.node, sec.id, "leaf", el), 120);
     });
   });
 
   // Cross-links between leaves (e.g. paper -> research project)
   document.querySelectorAll("[data-links]").forEach((el) => {
     el.dataset.links.trim().split(/\s+/).forEach((target) => {
-      addEdge(byId.get(el.id), byId.get(target), 95);
+      addEdge(byId.get(el.id), byId.get(target), 130);
     });
   });
 
@@ -79,9 +79,9 @@
 
   /* ---------- simulation ---------- */
 
-  const REPULSION = 4200;
+  const REPULSION = 9000;
   const SPRING = 0.03;
-  const GRAVITY = 0.012;
+  const GRAVITY = 0.006;
   const DAMPING = 0.86;
   const MAX_SPEED = 14;
 
