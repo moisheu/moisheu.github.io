@@ -208,6 +208,8 @@ h2 {
 }
 h3 { font-size: 1.02rem; }
 
+strong { font-weight: 600; color: var(--ink); }
+
 a { color: var(--accent); text-decoration: none; }
 a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 2px; }
 
