@@ -574,18 +574,18 @@ footer {
 @media (max-width: 620px) {
   .graph-legend {
     top: auto;
-    bottom: 3rem;
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
+    bottom: 2.9rem;
+    left: 0.75rem;
+    right: 0.75rem;
     flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.1rem 0.4rem;
-    max-width: calc(100% - 1.5rem);
-    padding: 0.4rem 0.6rem;
+    flex-wrap: nowrap;
+    gap: 0.1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0.2rem 0.4rem;
   }
-  .graph-legend li { padding: 0.75rem 0.4rem; margin: 0; }
+  .graph-legend::-webkit-scrollbar { display: none; }
+  .graph-legend li { flex: 0 0 auto; padding: 0.75rem 0.5rem; margin: 0; white-space: nowrap; }
   .graph-tip {
     top: auto;
     bottom: 8.5rem;

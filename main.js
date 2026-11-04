@@ -99,6 +99,12 @@
     active = nodes.filter(isVisible);
     activeEdges = edges.filter((e) => isVisible(e.a) && isVisible(e.b));
   }
+  // Start focused: everything except these groups is off until toggled in the key.
+  const DEFAULT_GROUPS = new Set(["research", "experience", "themes"]);
+  nodes.forEach((n) => {
+    if (n.kind !== "home" && !DEFAULT_GROUPS.has(n.group)) hiddenGroups.add(n.group);
+  });
+  refreshActive();
 
   /* ---------- simulation ---------- */
 
@@ -155,6 +161,7 @@
 
   let W = 0, H = 0, DPR = 1;
   let panning = false;
+  const legend = document.querySelector(".graph-legend");
   let scale = 1, panX = 0, panY = 0;
   let hoverNode = null, dragNode = null;
 
@@ -229,23 +236,58 @@
       }
     }
 
-    // labels: hubs always; leaves fade in with zoom or focus
+    // labels: important nodes first; a label that would overlap one already
+    // placed is skipped unless it belongs to the hovered node or its neighbours
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
-    for (const n of active) {
+    const RANK = { home: 0, hub: 1, theme: 2, leaf: 3 };
+    const ordered = active.slice().sort((p, q) =>
+      (RANK[p.kind] - RANK[q.kind]) || (q.degree - p.degree));
+    const placed = [];
+    for (const n of ordered) {
       const isFocusish = focus && (n === focus || near.has(n));
       let a1;
       if (n.kind === "leaf") {
-        a1 = isFocusish ? 1 : Math.max(0.35, Math.min(1, (scale - 0.6) * 1.6));
+        a1 = isFocusish ? 1 : Math.max(0.45, Math.min(1, (scale - 0.5) * 1.6));
       } else {
         a1 = !focus || isFocusish ? 1 : 0.25;
       }
       if (a1 <= 0.02) continue;
       const size = (n.kind === "home" ? 13 : n.kind === "hub" ? 11.5 : n.kind === "theme" ? 10.5 : 10) / scale;
       ctx.font = `500 ${size}px Inter, system-ui, sans-serif`;
+      const w = ctx.measureText(n.label).width;
+      const h = size * 1.25;
+      const gap = 4 / scale, pad = 3 / scale;
+      // candidate placements: below, above, right, left (top-left corner of the text)
+      const spots = [
+        [n.x - w / 2, n.y + n.r + gap],
+        [n.x - w / 2, n.y - n.r - gap - h],
+        [n.x + n.r + gap + pad, n.y - h / 2],
+        [n.x - n.r - gap - pad - w, n.y - h / 2],
+      ];
+      let box = null, x0 = 0, y0 = 0;
+      // world-space limits of the visible canvas, so labels stay on screen when possible
+      const [vx0, vy0] = toWorld(0, 0), [vx1, vy1] = toWorld(W, H);
+      for (const [sx, sy] of spots) {
+        const b = [sx - pad, sy - pad, sx + w + pad, sy + h + pad];
+        const hit = placed.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+        const offscreen = b[0] < vx0 || b[2] > vx1 || b[1] < vy0 || b[3] > vy1;
+        if (!hit && !offscreen) { box = b; x0 = sx; y0 = sy; break; }
+      }
+      if (!box) {
+        if (n.kind === "leaf" && !isFocusish) continue;
+        [x0, y0] = spots[0];
+        box = [x0 - pad, y0 - pad, x0 + w + pad, y0 + h + pad];
+      }
+      placed.push(box);
+      // backing plate so edges do not run through the text
+      ctx.globalAlpha = a1 * 0.78;
+      ctx.fillStyle = "#101317";
+      ctx.fillRect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
       ctx.globalAlpha = a1;
+      ctx.textAlign = "left";
       ctx.fillStyle = n === focus ? "#ffffff" : n.kind === "leaf" ? "#9aa0a6" : n.kind === "theme" ? color(n) : "#c9cdd2";
-      ctx.fillText(n.label, n.x, n.y + n.r + 4 / scale);
+      ctx.fillText(n.label, x0, y0);
     }
     ctx.globalAlpha = 1;
     updateTooltip();
@@ -304,8 +346,10 @@
   }
 
   let rafId = null;
+  let autoFit = true; // keep the whole graph in view until the visitor takes control
   function loop() {
     tick();
+    if (autoFit) fitToView();
     draw();
     rafId = requestAnimationFrame(loop);
   }
@@ -318,6 +362,7 @@
   let pinchDist = 0;
 
   canvas.addEventListener("pointerdown", (e) => {
+    autoFit = false;
     canvas.setPointerCapture(e.pointerId);
     pointers.set(e.pointerId, [e.offsetX, e.offsetY]);
     if (pointers.size === 2) {
@@ -383,6 +428,7 @@
 
   canvas.addEventListener("wheel", (e) => {
     e.preventDefault();
+    autoFit = false;
     zoomAt(e.offsetX, e.offsetY, Math.exp(-e.deltaY * 0.0015));
   }, { passive: false });
 
@@ -396,9 +442,14 @@
       minY = Math.min(minY, n.y); maxY = Math.max(maxY, n.y);
     }
     const spanX = Math.max(maxX - minX, 1), spanY = Math.max(maxY - minY, 1);
-    scale = Math.min(3.5, Math.max(0.3, Math.min((W * 0.72) / spanX, (H * 0.68) / spanY)));
+    // on phones the key sits along the bottom, so fit into the space above it
+    const inset = window.innerWidth <= 620 && legend ? legend.offsetHeight + 56 : 0;
+    const usableH = H - inset;
+    // leave screen-space room for labels that hang off the outermost nodes
+    const fitW = Math.max(140, W * 0.84 - 90), fitH = Math.max(140, usableH * 0.76 - 40);
+    scale = Math.min(3.5, Math.max(0.3, Math.min(fitW / spanX, fitH / spanY)));
     panX = -((minX + maxX) / 2) * scale;
-    panY = -((minY + maxY) / 2) * scale;
+    panY = -((minY + maxY) / 2) * scale - inset / 2;
   }
 
   const toggle = document.getElementById("view-toggle");
@@ -416,6 +467,7 @@
     if (graph) {
       resize();
       if (!fitted) { fitToView(); fitted = true; }
+      if (fitted && !rafId) autoFit = true;
       showTip();
       alpha = Math.max(alpha, 0.6);
       if (!rafId) loop();
@@ -457,7 +509,6 @@
 
   /* ---------- legend ---------- */
 
-  const legend = document.querySelector(".graph-legend");
   function addLegendItem(groupId, label) {
     const sec = { id: groupId };
     const li = document.createElement("li");
@@ -467,7 +518,8 @@
     li.append(dot, label);
     li.tabIndex = 0;
     li.setAttribute("role", "button");
-    li.setAttribute("aria-pressed", "true");
+    li.classList.toggle("off", hiddenGroups.has(sec.id));
+    li.setAttribute("aria-pressed", String(!hiddenGroups.has(sec.id)));
     li.title = "Click to hide or show this group";
     const toggleGroup = () => {
       const off = !hiddenGroups.has(sec.id);
@@ -477,7 +529,7 @@
       refreshActive();
       hoverNode = null;
       alpha = Math.max(alpha, 0.5);
-      fitToView();
+      autoFit = true;
       dismissTip();
     };
     li.addEventListener("click", toggleGroup);

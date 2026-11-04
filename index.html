@@ -59,6 +59,8 @@
         <li id="theme-ratings" data-theme="Learning from human ratings" data-preview="Models trained on what people report: warmth and empathy ratings, trust surveys, and the preference labels that train reward models.">Learning from human ratings</li>
         <li id="theme-oversight" data-theme="Interpretability and oversight" data-preview="Making model behavior legible: symptom-level explanations for depression prediction, and what reward models actually learn from human judgments.">Interpretability and oversight</li>
         <li id="theme-signals" data-theme="Behavioral and social signals" data-preview="Facial behavior, affect, and free-text feedback as signals of mental health, social presence, and how people communicate.">Behavioral and social signals</li>
+        <li id="theme-rl" data-theme="Reinforcement learning" data-preview="Reward models and policies in RLHF, and reinforcement learning for routing decisions in an autonomous lunar network.">Reinforcement learning</li>
+        <li id="theme-simulation" data-theme="Simulation at scale" data-preview="Orchestrating and emulating large physics simulations: millions of solar scenarios and machine learning emulators of home energy models.">Simulation at scale</li>
       </ul>
       <p class="bio">
         I am a research assistant in the <a href="https://hxi.ucsd.edu/">Human-centered eXtended
@@ -123,7 +125,7 @@
 
       <h3 class="year">In preparation</h3>
       <ol class="pub-list">
-        <li id="pub-rlhf-bias" data-node="Flipping the Judge (in prep)" data-links="proj-rlhf-bias" data-themes="theme-judgment theme-ratings theme-oversight">
+        <li id="pub-rlhf-bias" data-node="Flipping the Judge (in prep)" data-links="proj-rlhf-bias" data-themes="theme-judgment theme-ratings theme-oversight theme-rl">
           <span class="pub-title">Flipping the Judge: Training Pool Composition Determines the Sign of Reward Model Length Bias</span>
           <span class="pub-authors"><strong>Lee, E.</strong></span>
           <span class="pub-venue">Manuscript in preparation, 2026</span>
@@ -152,7 +154,7 @@
 
       <h3 class="year">2024</h3>
       <ol class="pub-list">
-        <li id="pub-agile24" data-node="ML Energy Modeling, 2024" data-links="proj-energy">
+        <li id="pub-agile24" data-node="ML Energy Modeling, 2024" data-links="proj-energy" data-themes="theme-simulation">
           <span class="pub-title">Making Energy Modeling Faster: A Machine Learning-Based Approach to Emulate Physics-Based Simulation for Energy Consumption Prediction</span>
           <span class="pub-authors">Park, J., Friesen, J., <strong>Lee, E.</strong></span>
           <span class="pub-venue">Agile Electrification (UCSD Design Lab) industry whitepaper</span>
@@ -164,7 +166,7 @@
     <section id="research" data-graph="Research">
       <h2>Research</h2>
       <div class="project-grid">
-        <article class="project" id="proj-rlhf-bias" data-node="Reward Model Bias in RLHF" data-themes="theme-judgment theme-ratings theme-oversight">
+        <article class="project" id="proj-rlhf-bias" data-node="Reward Model Bias in RLHF" data-themes="theme-judgment theme-ratings theme-oversight theme-rl">
           <h3>Reward Model Bias in RLHF</h3>
           <p class="project-meta">Independent research · May 2026 – present</p>
           <p>
@@ -224,7 +226,7 @@
             pipeline</strong> (OpenCV, DLib) estimating players' arousal and valence. Reported in R. Bhide's <a href="https://escholarship.org/uc/item/2xv7w1zq">master's thesis</a>.
           </p>
         </article>
-        <article class="project" id="proj-energy" data-node="ML Emulation of Energy Models">
+        <article class="project" id="proj-energy" data-node="ML Emulation of Energy Models" data-themes="theme-simulation">
           <h3>ML Emulation of Energy Models</h3>
           <p class="project-meta">Agile Electrification · UCSD Design Lab · Aug 2023 – Sep 2024</p>
           <p>
@@ -266,12 +268,12 @@
           <span class="item-sub">Data Engineer, Employee Compliance · Aug 2025 – present</span>
           <span class="item-desc">Modernizing legacy compliance systems into <strong>SQL-driven workflows</strong> with PL/SQL, Oracle, and Azure Data Factory.</span>
         </li>
-        <li id="exp-balto" data-node="Balto Energy, DS Intern">
+        <li id="exp-balto" data-node="Balto Energy, DS Intern" data-themes="theme-simulation">
           <span class="item-title">Balto Energy</span>
           <span class="item-sub">Data Science, Development &amp; Analytics Intern · Aug 2024 – Jun 2025</span>
           <span class="item-desc">Rebuilt data pipelines with <strong>AWS Lambda and Step Functions</strong> to orchestrate <strong>millions of solar scenario simulations</strong>; built <strong>Snowflake</strong> data infrastructure integrating geospatial and weather APIs.</span>
         </li>
-        <li id="exp-navxcom" data-node="NavXCom, ML Engineer">
+        <li id="exp-navxcom" data-node="NavXCom, ML Engineer" data-themes="theme-rl">
           <span class="item-title">NavXCom (NASA Contractor)</span>
           <span class="item-sub">Data Scientist / Machine Learning Engineer · Apr 2024 – Jan 2025</span>
           <span class="item-desc">Developed the <strong>machine learning pipeline, reinforcement learning, and neural network architecture</strong> for an autonomous lunar communication network that makes real-time routing decisions without Earth-based control (Python, TensorFlow, C++). Validated the system at <strong>NASA Marshall Space Flight Center</strong> in lunar regolith field tests with autonomous rovers. Documented in <a href="https://techport.nasa.gov/projects/146966">NASA TechPort</a>.</span>
@@ -281,7 +283,7 @@
           <span class="item-sub">Data Engineering Intern, Fraud Investigation Data Squad · Jun 2024 – Aug 2024</span>
           <span class="item-desc"><strong>RESTful AnySQL API and Python library</strong> for querying across federated databases (Oracle DB2, Snowflake, Denodo).</span>
         </li>
-        <li id="exp-dl-nlp" data-node="Design Lab, NLP Intern">
+        <li id="exp-dl-nlp" data-node="Design Lab, NLP Intern" data-themes="theme-signals">
           <span class="item-title">UCSD Design Lab</span>
           <span class="item-sub">NLP Data Science Intern · Jun 2023 – Aug 2023</span>
           <span class="item-desc"><strong>Sentiment analysis with NLP and LLMs</strong> to identify student research-attrition factors from survey feedback.</span>
@@ -344,7 +346,7 @@
     <ul class="graph-legend" aria-label="Filter groups"></ul>
     <div class="graph-tooltip" hidden><strong class="graph-tooltip-title"></strong><span class="graph-tooltip-body"></span></div>
     <div class="graph-tip" role="status" hidden>
-      <span>Tip: hover a node for a preview. Click a group in the key to hide or show it.</span>
+      <span>Tip: hover a node for a preview. Only research, experience, and themes are shown; use the key to add more.</span>
       <button type="button" class="graph-tip-close" aria-label="Dismiss tip">&times;</button>
     </div>
   </div>
