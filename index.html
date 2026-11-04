@@ -53,6 +53,13 @@
         persuasive framing. I also study <strong>what reward models learn from those judgments</strong> in
         reinforcement learning from human feedback (RLHF).
       </p>
+      <h3 class="subhead">Themes</h3>
+      <ul class="themes" aria-label="Research themes">
+        <li id="theme-judgment" data-theme="Human judgment of AI" data-preview="How people judge systems they cannot fully see inside, from trust in autonomous vehicles to the human ratings behind RLHF.">Human judgment of AI</li>
+        <li id="theme-ratings" data-theme="Learning from human ratings" data-preview="Models trained on what people report: warmth and empathy ratings, trust surveys, and the preference labels that train reward models.">Learning from human ratings</li>
+        <li id="theme-oversight" data-theme="Interpretability and oversight" data-preview="Making model behavior legible: symptom-level explanations for depression prediction, and what reward models actually learn from human judgments.">Interpretability and oversight</li>
+        <li id="theme-signals" data-theme="Behavioral and social signals" data-preview="Facial behavior, affect, and free-text feedback as signals of mental health, social presence, and how people communicate.">Behavioral and social signals</li>
+      </ul>
       <p class="bio">
         I am a research assistant in the <a href="https://hxi.ucsd.edu/">Human-centered eXtended
         Intelligence</a> group at the UCSD Design Lab (PI Nadir Weibel), where I work on
@@ -116,7 +123,7 @@
 
       <h3 class="year">In preparation</h3>
       <ol class="pub-list">
-        <li id="pub-rlhf-bias" data-node="Flipping the Judge (in prep)" data-links="proj-rlhf-bias">
+        <li id="pub-rlhf-bias" data-node="Flipping the Judge (in prep)" data-links="proj-rlhf-bias" data-themes="theme-judgment theme-ratings theme-oversight">
           <span class="pub-title">Flipping the Judge: Training Pool Composition Determines the Sign of Reward Model Length Bias</span>
           <span class="pub-authors"><strong>Lee, E.</strong></span>
           <span class="pub-venue">Manuscript in preparation, 2026</span>
@@ -126,7 +133,7 @@
 
       <h3 class="year">In review</h3>
       <ol class="pub-list">
-        <li id="pub-aaai27" data-node="Mental Health Sensing with CBMs (in review)" data-links="proj-mental-health">
+        <li id="pub-aaai27" data-node="Mental Health Sensing with CBMs (in review)" data-links="proj-mental-health" data-themes="theme-oversight">
           <span class="pub-title">Interpretable Mental Health Sensing using Concept Bottleneck Models</span>
           <span class="pub-authors">Bedmutha, M., <strong>Lee, E.</strong>, Weibel, N.</span>
           <span class="pub-venue">Under review, Association for the Advancement of Artificial Intelligence Conference on Artificial Intelligence (AAAI-27)</span>
@@ -135,7 +142,7 @@
 
       <h3 class="year">2025</h3>
       <ol class="pub-list">
-        <li id="pub-chi25" data-node="Predicting Trust in AVs, CHI '25" data-links="proj-av-trust">
+        <li id="pub-chi25" data-node="Predicting Trust in AVs, CHI '25" data-links="proj-av-trust" data-themes="theme-judgment theme-ratings">
           <span class="pub-title">Predicting Trust in Autonomous Vehicles: Modeling Young Adult Psychosocial Traits, Risk-Benefit Attitudes, and Driving Factors with Machine Learning</span>
           <span class="pub-authors">Kaufman, R., <strong>Lee, E.</strong>, Bedmutha, M., Kirsh, D., Weibel, N.</span>
           <span class="pub-venue">ACM Conference on Human Factors in Computing Systems (CHI 2025)</span>
@@ -157,7 +164,7 @@
     <section id="research" data-graph="Research">
       <h2>Research</h2>
       <div class="project-grid">
-        <article class="project" id="proj-rlhf-bias" data-node="Reward Model Bias in RLHF">
+        <article class="project" id="proj-rlhf-bias" data-node="Reward Model Bias in RLHF" data-themes="theme-judgment theme-ratings theme-oversight">
           <h3>Reward Model Bias in RLHF</h3>
           <p class="project-meta">Independent research · May 2026 – present</p>
           <p>
@@ -168,7 +175,7 @@
             Manuscript in preparation. <a href="https://github.com/moisheu/rlhf-bias-decomp">Code</a>.
           </p>
         </article>
-        <article class="project" id="proj-mental-health" data-node="Mental Health Sensing">
+        <article class="project" id="proj-mental-health" data-node="Mental Health Sensing" data-themes="theme-oversight theme-signals">
           <h3>Interpretable Mental Health Sensing</h3>
           <p class="project-meta">UCSD Design Lab · HXI · Dec 2025 – present</p>
           <p>
@@ -180,7 +187,7 @@
             symptom behind each prediction</strong>. <strong>Under review at AAAI-27</strong>.
           </p>
         </article>
-        <article class="project" id="proj-social-signals" data-node="Social Signal Prediction">
+        <article class="project" id="proj-social-signals" data-node="Social Signal Prediction" data-themes="theme-ratings theme-signals">
           <h3>Social Signal Prediction</h3>
           <p class="project-meta">UCSD Design Lab · HXI · NIH UnBIASED · Dec 2025 – Jun 2026</p>
           <p>
@@ -193,7 +200,7 @@
             0.5 is chance).
           </p>
         </article>
-        <article class="project" id="proj-av-trust" data-node="Trust in Autonomous Vehicles">
+        <article class="project" id="proj-av-trust" data-node="Trust in Autonomous Vehicles" data-themes="theme-judgment theme-ratings theme-signals">
           <h3>Trust in Autonomous Vehicles</h3>
           <p class="project-meta">UCSD Design Lab · HXI · Mar 2023 – Sep 2024</p>
           <p>
@@ -206,7 +213,7 @@
             <a href="https://doi.org/10.1145/3706598.3713188">CHI 2025</a>.
           </p>
         </article>
-        <article class="project" id="proj-affective-gaming" data-node="Affective Gaming">
+        <article class="project" id="proj-affective-gaming" data-node="Affective Gaming" data-themes="theme-ratings theme-signals">
           <h3>Affective Gaming</h3>
           <p class="project-meta">UCSD Design Lab · Jun 2023 – Oct 2023</p>
           <p>
@@ -237,7 +244,7 @@
             <strong>demoed for Smithsonian curators</strong>.
           </p>
         </article>
-        <article class="project" id="proj-clinical-nlp" data-node="Clinical Attrition NLP">
+        <article class="project" id="proj-clinical-nlp" data-node="Clinical Attrition NLP" data-themes="theme-signals">
           <h3>Clinical Attrition NLP</h3>
           <p class="project-meta">Scripps Research Translational Institute · NIH All of Us · Jun 2022 – Sep 2022</p>
           <p>
@@ -335,8 +342,9 @@
     <canvas id="graph-canvas" aria-label="Interactive site map. Drag nodes, scroll to zoom, click a node to open its page."></canvas>
     <div class="graph-hint" aria-hidden="true"><span class="hint-mouse">drag to move · scroll to zoom · click a node to visit</span><span class="hint-touch">drag to move · pinch to zoom · tap a node to visit</span></div>
     <ul class="graph-legend" aria-label="Filter groups"></ul>
+    <div class="graph-tooltip" hidden><strong class="graph-tooltip-title"></strong><span class="graph-tooltip-body"></span></div>
     <div class="graph-tip" role="status" hidden>
-      <span>Tip: click a group in the key to hide or show its nodes.</span>
+      <span>Tip: hover a node for a preview. Click a group in the key to hide or show it.</span>
       <button type="button" class="graph-tip-close" aria-label="Dismiss tip">&times;</button>
     </div>
   </div>
