@@ -34,7 +34,7 @@ body {
   color: var(--ink);
   font-family: var(--sans);
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
@@ -208,7 +208,7 @@ h2 {
 }
 h3 { font-size: 1.02rem; }
 
-strong { font-weight: 600; color: var(--ink); }
+strong { font-weight: 500; color: var(--ink); }
 
 a { color: var(--accent); text-decoration: none; }
 a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 2px; }
@@ -225,12 +225,12 @@ a:hover { color: var(--accent-hover); text-decoration: underline; text-underline
 .hero-head { min-width: 0; }
 .hero-head h1 { margin: 0; }
 .hero-head .role { margin: 0.4rem 0 0; }
-.hero + .bio { margin-top: 1.75rem; }
+.hero + .subhead { margin-top: 1.75rem; }
 
 .portrait {
-  flex: 0 0 140px;
-  width: 140px;
-  height: 140px;
+  flex: 0 0 170px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
   background: #fff;
   border: 1px solid var(--hairline);
@@ -273,7 +273,7 @@ a:hover { color: var(--accent-hover); text-decoration: underline; text-underline
 
 @media (max-width: 620px) {
   .hero { flex-direction: column; gap: 1.25rem; align-items: flex-start; }
-  .portrait { flex-basis: auto; width: 120px; height: 120px; }
+  .portrait { flex-basis: auto; width: 140px; height: 140px; }
   .project { padding: 0.95rem 1rem; }
 }
 
