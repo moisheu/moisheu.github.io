@@ -29,6 +29,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
 
 body {
   margin: 0;
+  overflow-wrap: anywhere;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
@@ -98,6 +99,51 @@ body {
   transform: translateY(-1px);
 }
 #view-toggle .ico-list { display: none; }
+
+/* ---------- phone / tablet: compact sticky header ---------- */
+
+@media (max-width: 859.98px) {
+  html { scroll-padding-top: 6.5rem; }
+
+  .site-nav {
+    flex-wrap: wrap;
+    gap: 0.35rem 1rem;
+    padding: 0.7rem 1rem 0;
+  }
+  .brand { order: 0; }
+  #view-toggle {
+    order: 1;
+    min-height: 2.75rem;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.8rem;
+  }
+  .site-nav nav {
+    order: 2;
+    flex: 1 0 100%;
+    flex-wrap: nowrap;
+    gap: 0;
+    margin: 0 -1rem;
+    padding: 0 0.4rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .site-nav nav::-webkit-scrollbar { display: none; }
+  .site-nav nav a {
+    flex: 0 0 auto;
+    min-height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.6rem 0.55rem;
+    white-space: nowrap;
+  }
+  .links-row { gap: 0 1.1rem; }
+  .links-row a,
+  .links-row .link-disabled { min-height: 2.75rem; }
+
+  section { padding-top: 2.25rem; }
+  h1 { font-size: 1.75rem; }
+}
 
 /* ---------- content column ---------- */
 
@@ -226,6 +272,7 @@ a:hover { color: var(--accent-hover); text-decoration: underline; text-underline
 @media (max-width: 620px) {
   .hero { flex-direction: column; gap: 1.25rem; align-items: flex-start; }
   .portrait { flex-basis: auto; width: 120px; height: 120px; }
+  .project { padding: 0.95rem 1rem; }
 }
 
 /* ---------- news ---------- */
@@ -242,6 +289,10 @@ a:hover { color: var(--accent-hover); text-decoration: underline; text-underline
   font-size: 0.82rem;
   font-variant-numeric: tabular-nums;
   padding-top: 0.15rem;
+}
+@media (max-width: 620px) {
+  .news-list li { flex-direction: column; gap: 0.1rem; padding: 0.55rem 0; }
+  .news-list time { flex: 0 0 auto; padding-top: 0; }
 }
 
 /* ---------- publications ---------- */
@@ -364,6 +415,12 @@ footer {
 }
 #graph-canvas.dragging { cursor: grabbing; }
 #graph-canvas.over-node { cursor: pointer; }
+
+.graph-hint .hint-touch { display: none; }
+@media (hover: none) and (pointer: coarse) {
+  .graph-hint .hint-mouse { display: none; }
+  .graph-hint .hint-touch { display: inline; }
+}
 
 .graph-hint {
   position: absolute;
