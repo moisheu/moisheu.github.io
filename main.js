@@ -299,6 +299,10 @@
   const tooltipTitle = tooltip && tooltip.querySelector(".graph-tooltip-title");
   const tooltipBody = tooltip && tooltip.querySelector(".graph-tooltip-body");
   let tooltipFor = null;
+  let stickyNode = null; // touch screens: a tapped node keeps its preview open
+  const COARSE = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+  const tooltipOpen = tooltip && tooltip.querySelector(".graph-tooltip-open");
+  if (tooltipOpen) tooltipOpen.addEventListener("click", () => { if (stickyNode) visit(stickyNode); });
 
   function preview(n) {
     const el = n.el;
@@ -324,7 +328,9 @@
 
   function updateTooltip() {
     if (!tooltip) return;
-    const n = hoverNode && !dragNode && !panning ? hoverNode : null;
+    const n = stickyNode || (hoverNode && !dragNode && !panning ? hoverNode : null);
+    tooltip.classList.toggle("sticky", !!stickyNode);
+    if (tooltipOpen) tooltipOpen.hidden = !stickyNode;
     if (!n) { tooltip.hidden = true; tooltipFor = null; return; }
     if (tooltipFor !== n) {
       tooltipFor = n;
@@ -408,7 +414,12 @@
     pointers.delete(e.pointerId);
     pinchDist = 0;
     const clicked = dragNode && !moved && performance.now() - downT < 400;
-    if (clicked) visit(dragNode);
+    if (clicked) {
+      if (!COARSE || stickyNode === dragNode) visit(dragNode);
+      else stickyNode = dragNode; // first tap previews, second tap opens
+    } else if (!dragNode && !moved) {
+      stickyNode = null; // tap on empty space closes the preview
+    }
     dragNode = null;
     panning = false;
     canvas.classList.remove("dragging");
@@ -478,6 +489,7 @@
   }
 
   function visit(node) {
+    stickyNode = null;
     setView("standard");
     const el = node.el;
     if (!el) return;
@@ -501,7 +513,38 @@
 
   // nav links exit graph mode so anchors work
   document.querySelectorAll('.site-nav nav a, .brand').forEach((a) =>
-    a.addEventListener("click", () => setView("standard", false)));
+    a.addEventListener("click", () => { setView("standard", false); closeMenu(); }));
+
+  /* ---------- phone menu ---------- */
+
+  const siteNav = document.querySelector(".site-nav");
+  const menuToggle = document.getElementById("menu-toggle");
+  function setMenu(open) {
+    if (!menuToggle) return;
+    siteNav.classList.toggle("menu-open", open);
+    menuToggle.setAttribute("aria-expanded", String(open));
+    menuToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  }
+  function closeMenu() { setMenu(false); }
+  if (menuToggle) {
+    menuToggle.addEventListener("click", () => setMenu(!siteNav.classList.contains("menu-open")));
+    document.addEventListener("click", (e) => { if (!siteNav.contains(e.target)) closeMenu(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
+    window.addEventListener("resize", () => { if (window.innerWidth >= 860) closeMenu(); });
+  }
+
+  /* ---------- "better on desktop" note for small screens ---------- */
+
+  const note = document.querySelector(".mobile-note");
+  if (note) {
+    let seen = false;
+    try { seen = localStorage.getItem("mobile-note-seen") === "1"; } catch (_) {}
+    if (!seen && window.matchMedia("(max-width: 620px)").matches) note.hidden = false;
+    note.querySelector(".mobile-note-close").addEventListener("click", () => {
+      note.hidden = true;
+      try { localStorage.setItem("mobile-note-seen", "1"); } catch (_) {}
+    });
+  }
 
   window.addEventListener("resize", () => {
     if (document.body.classList.contains("graph-mode")) { resize(); alpha = Math.max(alpha, 0.3); }
@@ -528,6 +571,7 @@
       li.setAttribute("aria-pressed", String(!off));
       refreshActive();
       hoverNode = null;
+      stickyNode = null;
       alpha = Math.max(alpha, 0.5);
       autoFit = true;
       dismissTip();

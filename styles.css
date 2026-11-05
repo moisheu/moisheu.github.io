@@ -100,6 +100,9 @@ body {
 }
 #view-toggle .ico-list { display: none; }
 
+#menu-toggle { display: none; }
+.mobile-note { display: none; }
+
 /* ---------- phone / tablet: compact sticky header ---------- */
 
 @media (max-width: 859.98px) {
@@ -107,36 +110,95 @@ body {
 
   .site-nav {
     flex-wrap: wrap;
-    gap: 0.35rem 1rem;
-    padding: 0.7rem 1rem 0;
+    gap: 0.5rem 0.6rem;
+    padding: 0.6rem 1rem;
   }
   .brand { order: 0; }
-  #view-toggle {
+
+  /* hamburger */
+  #menu-toggle {
     order: 1;
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-left: auto;
+    padding: 0;
+    background: none;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    cursor: pointer;
+    color: var(--ink-2);
+  }
+  #menu-toggle .ico-close { display: none; }
+  .site-nav.menu-open #menu-toggle .ico-burger { display: none; }
+  .site-nav.menu-open #menu-toggle .ico-close { display: block; }
+
+  #view-toggle {
+    order: 2;
     min-height: 2.75rem;
     padding: 0.45rem 0.9rem;
     font-size: 0.8rem;
   }
+
+  /* dropdown menu */
   .site-nav nav {
-    order: 2;
+    display: none;
+    order: 3;
     flex: 1 0 100%;
-    flex-wrap: nowrap;
+    flex-direction: column;
     gap: 0;
-    margin: 0 -1rem;
-    padding: 0 0.4rem;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    margin: 0.2rem 0 0;
+    padding: 0.25rem 0 0;
+    border-top: 1px solid var(--hairline);
   }
-  .site-nav nav::-webkit-scrollbar { display: none; }
+  .site-nav.menu-open nav { display: flex; }
   .site-nav nav a {
-    flex: 0 0 auto;
-    min-height: 2.75rem;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    padding: 0.4rem 0.6rem 0.55rem;
-    white-space: nowrap;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.25rem;
+    font-size: 0.95rem;
+    border-bottom: 1px solid var(--hairline);
   }
+  .site-nav nav a:last-child { border-bottom: none; }
+
+  /* "better on desktop" note */
+  .mobile-note {
+    order: 4;
+    flex: 1 0 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.1rem 0 0;
+    padding: 0.45rem 0.4rem 0.45rem 0.7rem;
+    background: var(--flash);
+    border-radius: 6px;
+    color: var(--ink-2);
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+  .mobile-note[hidden] { display: none; }
+  .mobile-note span { flex: 1; }
+  .mobile-note-close {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--ink-2);
+    font: 1.1rem/1 var(--sans);
+    cursor: pointer;
+  }
+  .mobile-note-close:hover { background: rgba(0, 0, 0, 0.06); }
+
+  body.graph-mode #menu-toggle { color: var(--graph-ink-2); border-color: rgba(255, 255, 255, 0.22); }
+  body.graph-mode .site-nav nav,
+  body.graph-mode .site-nav nav a { border-color: rgba(255, 255, 255, 0.08); }
+  body.graph-mode .mobile-note { background: rgba(255, 255, 255, 0.08); color: var(--graph-ink-2); }
+  body.graph-mode .mobile-note-close { color: var(--graph-ink-2); }
   .links-row { gap: 0 1.1rem; }
   .links-row a,
   .links-row .link-disabled { min-height: 2.75rem; }
@@ -516,6 +578,20 @@ footer {
   color: var(--graph-ink);
   font-weight: 600;
 }
+.graph-tooltip.sticky { pointer-events: auto; }
+.graph-tooltip-open {
+  display: block;
+  margin-top: 0.5rem;
+  padding: 0.45rem 0.9rem;
+  min-height: 2.5rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font: 600 0.8rem var(--sans);
+  cursor: pointer;
+}
+.graph-tooltip-open[hidden] { display: none; }
 .graph-legend i {
   width: 9px;
   height: 9px;
