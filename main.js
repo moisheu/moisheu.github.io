@@ -21,6 +21,7 @@
     experience:   "#e66767",
     leadership:   "#d55181",
     contact:      "#d95926",
+    themes:       "#5cc8c8",
   };
   const HOME_COLOR = "#e8eaed";
   const EDGE_COLOR = "rgba(232, 234, 237, 0.13)";
@@ -38,7 +39,7 @@
       x: (Math.random() - 0.5) * 60,
       y: (Math.random() - 0.5) * 60,
       vx: 0, vy: 0,
-      r: kind === "home" ? 15 : kind === "hub" ? 9 : 5.5,
+      r: kind === "home" ? 15 : kind === "hub" ? 9 : kind === "theme" ? 7 : 5.5,
       degree: 0,
     };
     nodes.push(n);
@@ -46,9 +47,9 @@
     return n;
   }
 
-  function addEdge(a, b, rest) {
+  function addEdge(a, b, rest, k = 1) {
     if (!a || !b || a === b) return;
-    edges.push({ a, b, rest });
+    edges.push({ a, b, rest, k });
     a.degree++; b.degree++;
   }
 
@@ -58,17 +59,29 @@
 
   document.querySelectorAll("section[data-graph]").forEach((sec) => {
     const hub = addNode(sec.id, sec.dataset.graph, sec.id, "hub", sec);
-    addEdge(home, hub, 160);
+    addEdge(home, hub, 230);
     sec.querySelectorAll("[data-node]").forEach((el, i) => {
       if (!el.id) el.id = `${sec.id}-item-${i}`;
-      addEdge(hub, addNode(el.id, el.dataset.node, sec.id, "leaf", el), 85);
+      addEdge(hub, addNode(el.id, el.dataset.node, sec.id, "leaf", el), 120);
     });
   });
 
   // Cross-links between leaves (e.g. paper -> research project)
   document.querySelectorAll("[data-links]").forEach((el) => {
     el.dataset.links.trim().split(/\s+/).forEach((target) => {
-      addEdge(byId.get(el.id), byId.get(target), 95);
+      addEdge(byId.get(el.id), byId.get(target), 130);
+    });
+  });
+
+  // Theme nodes: <li data-theme="Label"> chips that tie work across sections together.
+  // Any element with data-themes="theme-id ..." gets a dashed edge to each theme.
+  document.querySelectorAll("[data-theme]").forEach((el, i) => {
+    if (!el.id) el.id = `theme-${i}`;
+    addNode(el.id, el.dataset.theme, "themes", "theme", el);
+  });
+  document.querySelectorAll("[data-themes]").forEach((el) => {
+    el.dataset.themes.trim().split(/\s+/).forEach((target) => {
+      addEdge(byId.get(el.id), byId.get(target), 170, 0.35);
     });
   });
 
@@ -77,11 +90,27 @@
   const neighbors = new Map(nodes.map((n) => [n, new Set()]));
   edges.forEach(({ a, b }) => { neighbors.get(a).add(b); neighbors.get(b).add(a); });
 
+  /* ---------- group filters (toggled from the legend) ---------- */
+
+  const hiddenGroups = new Set();
+  const isVisible = (n) => n.kind === "home" || !hiddenGroups.has(n.group);
+  let active = nodes, activeEdges = edges;
+  function refreshActive() {
+    active = nodes.filter(isVisible);
+    activeEdges = edges.filter((e) => isVisible(e.a) && isVisible(e.b));
+  }
+  // Start focused: everything except these groups is off until toggled in the key.
+  const DEFAULT_GROUPS = new Set(["research", "experience", "themes"]);
+  nodes.forEach((n) => {
+    if (n.kind !== "home" && !DEFAULT_GROUPS.has(n.group)) hiddenGroups.add(n.group);
+  });
+  refreshActive();
+
   /* ---------- simulation ---------- */
 
-  const REPULSION = 4200;
+  const REPULSION = 9000;
   const SPRING = 0.03;
-  const GRAVITY = 0.012;
+  const GRAVITY = 0.006;
   const DAMPING = 0.86;
   const MAX_SPEED = 14;
 
@@ -89,10 +118,10 @@
 
   function tick() {
     // pairwise repulsion (n is small; O(n^2) is fine)
-    for (let i = 0; i < nodes.length; i++) {
-      const a = nodes[i];
-      for (let j = i + 1; j < nodes.length; j++) {
-        const b = nodes[j];
+    for (let i = 0; i < active.length; i++) {
+      const a = active[i];
+      for (let j = i + 1; j < active.length; j++) {
+        const b = active[j];
         let dx = a.x - b.x, dy = a.y - b.y;
         let d2 = dx * dx + dy * dy;
         if (d2 < 1) { dx = Math.random() - 0.5; dy = Math.random() - 0.5; d2 = 1; }
@@ -104,16 +133,16 @@
       }
     }
     // springs along edges
-    for (const { a, b, rest } of edges) {
+    for (const { a, b, rest, k } of activeEdges) {
       const dx = b.x - a.x, dy = b.y - a.y;
       const d = Math.sqrt(dx * dx + dy * dy) || 1;
-      const f = (d - rest) * SPRING * alpha;
+      const f = (d - rest) * SPRING * k * alpha;
       const fx = (dx / d) * f, fy = (dy / d) * f;
       a.vx += fx; a.vy += fy;
       b.vx -= fx; b.vy -= fy;
     }
     // gentle pull to the origin + integrate
-    for (const n of nodes) {
+    for (const n of active) {
       n.vx -= n.x * GRAVITY * alpha;
       n.vy -= n.y * GRAVITY * alpha;
       n.vx *= DAMPING; n.vy *= DAMPING;
@@ -131,6 +160,8 @@
   const ctx = canvas.getContext("2d");
 
   let W = 0, H = 0, DPR = 1;
+  let panning = false;
+  const legend = document.querySelector(".graph-legend");
   let scale = 1, panX = 0, panY = 0;
   let hoverNode = null, dragNode = null;
 
@@ -146,7 +177,7 @@
   function nodeAt(px, py) {
     const [wx, wy] = toWorld(px, py);
     let best = null, bestD = Infinity;
-    for (const n of nodes) {
+    for (const n of active) {
       const d = Math.hypot(n.x - wx, n.y - wy);
       if (d < n.r + 6 / scale && d < bestD) { best = n; bestD = d; }
     }
@@ -166,8 +197,10 @@
 
     // edges
     ctx.lineWidth = 1 / scale;
-    for (const { a, b } of edges) {
+    for (const { a, b } of activeEdges) {
       const hi = focus && (a === focus || b === focus);
+      const themed = a.kind === "theme" || b.kind === "theme";
+      ctx.setLineDash(themed ? [5 / scale, 4 / scale] : []);
       ctx.strokeStyle = hi ? EDGE_HI : EDGE_COLOR;
       ctx.globalAlpha = focus && !hi ? 0.25 : 1;
       ctx.beginPath();
@@ -175,9 +208,10 @@
       ctx.lineTo(b.x, b.y);
       ctx.stroke();
     }
+    ctx.setLineDash([]);
 
     // nodes
-    for (const n of nodes) {
+    for (const n of active) {
       const active = !focus || n === focus || near.has(n);
       ctx.globalAlpha = active ? 1 : 0.18;
       if (n === focus) {
@@ -190,46 +224,145 @@
       }
       ctx.beginPath();
       ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-      ctx.fillStyle = color(n);
-      ctx.fill();
+      if (n.kind === "theme") {
+        ctx.fillStyle = "#101317";
+        ctx.fill();
+        ctx.lineWidth = 2 / scale;
+        ctx.strokeStyle = color(n);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = color(n);
+        ctx.fill();
+      }
     }
 
-    // labels: hubs always; leaves fade in with zoom or focus
+    // labels: important nodes first; a label that would overlap one already
+    // placed is skipped unless it belongs to the hovered node or its neighbours
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
-    for (const n of nodes) {
+    const RANK = { home: 0, hub: 1, theme: 2, leaf: 3 };
+    const ordered = active.slice().sort((p, q) =>
+      (RANK[p.kind] - RANK[q.kind]) || (q.degree - p.degree));
+    const placed = [];
+    for (const n of ordered) {
       const isFocusish = focus && (n === focus || near.has(n));
       let a1;
       if (n.kind === "leaf") {
-        a1 = isFocusish ? 1 : Math.max(0.35, Math.min(1, (scale - 0.6) * 1.6));
+        a1 = isFocusish ? 1 : Math.max(0.45, Math.min(1, (scale - 0.5) * 1.6));
       } else {
         a1 = !focus || isFocusish ? 1 : 0.25;
       }
       if (a1 <= 0.02) continue;
-      const size = (n.kind === "home" ? 13 : n.kind === "hub" ? 11.5 : 10) / scale;
+      const size = (n.kind === "home" ? 13 : n.kind === "hub" ? 11.5 : n.kind === "theme" ? 10.5 : 10) / scale;
       ctx.font = `500 ${size}px Inter, system-ui, sans-serif`;
+      const w = ctx.measureText(n.label).width;
+      const h = size * 1.25;
+      const gap = 4 / scale, pad = 3 / scale;
+      // candidate placements: below, above, right, left (top-left corner of the text)
+      const spots = [
+        [n.x - w / 2, n.y + n.r + gap],
+        [n.x - w / 2, n.y - n.r - gap - h],
+        [n.x + n.r + gap + pad, n.y - h / 2],
+        [n.x - n.r - gap - pad - w, n.y - h / 2],
+      ];
+      let box = null, x0 = 0, y0 = 0;
+      // world-space limits of the visible canvas, so labels stay on screen when possible
+      const [vx0, vy0] = toWorld(0, 0), [vx1, vy1] = toWorld(W, H);
+      for (const [sx, sy] of spots) {
+        const b = [sx - pad, sy - pad, sx + w + pad, sy + h + pad];
+        const hit = placed.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+        const offscreen = b[0] < vx0 || b[2] > vx1 || b[1] < vy0 || b[3] > vy1;
+        if (!hit && !offscreen) { box = b; x0 = sx; y0 = sy; break; }
+      }
+      if (!box) {
+        if (n.kind === "leaf" && !isFocusish) continue;
+        [x0, y0] = spots[0];
+        box = [x0 - pad, y0 - pad, x0 + w + pad, y0 + h + pad];
+      }
+      placed.push(box);
+      // backing plate so edges do not run through the text
+      ctx.globalAlpha = a1 * 0.78;
+      ctx.fillStyle = "#101317";
+      ctx.fillRect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
       ctx.globalAlpha = a1;
-      ctx.fillStyle = n === focus ? "#ffffff" : n.kind === "leaf" ? "#9aa0a6" : "#c9cdd2";
-      ctx.fillText(n.label, n.x, n.y + n.r + 4 / scale);
+      ctx.textAlign = "left";
+      ctx.fillStyle = n === focus ? "#ffffff" : n.kind === "leaf" ? "#9aa0a6" : n.kind === "theme" ? color(n) : "#c9cdd2";
+      ctx.fillText(n.label, x0, y0);
     }
     ctx.globalAlpha = 1;
+    updateTooltip();
+  }
+
+  /* ---------- hover tooltip ---------- */
+
+  const tooltip = document.querySelector(".graph-tooltip");
+  const tooltipTitle = tooltip && tooltip.querySelector(".graph-tooltip-title");
+  const tooltipBody = tooltip && tooltip.querySelector(".graph-tooltip-body");
+  let tooltipFor = null;
+
+  function preview(n) {
+    const el = n.el;
+    if (n.kind === "home") {
+      const role = document.querySelector(".role");
+      return role ? role.textContent.replace(/\s+/g, " ").trim() : "";
+    }
+    if (n.kind === "hub") {
+      const count = nodes.filter((m) => m.group === n.group && m.kind === "leaf").length;
+      return `${count} item${count === 1 ? "" : "s"}. Click to open this section.`;
+    }
+    if (!el) return "";
+    if (el.dataset.preview) return el.dataset.preview;
+    let text = el.textContent.replace(/\s+/g, " ").trim();
+    const title = el.querySelector(".pub-title, .item-title, h3, time");
+    if (title) {
+      const t = title.textContent.replace(/\s+/g, " ").trim();
+      if (text.startsWith(t)) text = text.slice(t.length).trim();
+    }
+    if (text.length > 220) text = text.slice(0, 217).replace(/\s+\S*$/, "") + "\u2026";
+    return text;
+  }
+
+  function updateTooltip() {
+    if (!tooltip) return;
+    const n = hoverNode && !dragNode && !panning ? hoverNode : null;
+    if (!n) { tooltip.hidden = true; tooltipFor = null; return; }
+    if (tooltipFor !== n) {
+      tooltipFor = n;
+      tooltipTitle.textContent = n.label;
+      tooltipBody.textContent = preview(n);
+    }
+    tooltip.hidden = false;
+    const sx = W / 2 + panX + n.x * scale;
+    const sy = H / 2 + panY + n.y * scale;
+    const gap = 14, margin = 8;
+    const tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+    let x = sx + n.r * scale + gap;
+    let y = sy - 12;
+    if (x + tw > W - margin) x = sx - n.r * scale - gap - tw;
+    if (x < margin) x = margin;
+    if (y + th > H - margin) y = H - margin - th;
+    if (y < margin) y = margin;
+    tooltip.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
   }
 
   let rafId = null;
+  let autoFit = true; // keep the whole graph in view until the visitor takes control
   function loop() {
     tick();
+    if (autoFit) fitToView();
     draw();
     rafId = requestAnimationFrame(loop);
   }
 
   /* ---------- interaction ---------- */
 
-  let panning = false;
+  panning = false;
   let downX = 0, downY = 0, downT = 0, moved = false;
   const pointers = new Map();
   let pinchDist = 0;
 
   canvas.addEventListener("pointerdown", (e) => {
+    autoFit = false;
     canvas.setPointerCapture(e.pointerId);
     pointers.set(e.pointerId, [e.offsetX, e.offsetY]);
     if (pointers.size === 2) {
@@ -295,6 +428,7 @@
 
   canvas.addEventListener("wheel", (e) => {
     e.preventDefault();
+    autoFit = false;
     zoomAt(e.offsetX, e.offsetY, Math.exp(-e.deltaY * 0.0015));
   }, { passive: false });
 
@@ -303,14 +437,19 @@
   let fitted = false;
   function fitToView() {
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    for (const n of nodes) {
+    for (const n of active) {
       minX = Math.min(minX, n.x); maxX = Math.max(maxX, n.x);
       minY = Math.min(minY, n.y); maxY = Math.max(maxY, n.y);
     }
     const spanX = Math.max(maxX - minX, 1), spanY = Math.max(maxY - minY, 1);
-    scale = Math.min(3.5, Math.max(0.3, Math.min((W * 0.72) / spanX, (H * 0.68) / spanY)));
+    // on phones the key sits along the bottom, so fit into the space above it
+    const inset = window.innerWidth <= 620 && legend ? legend.offsetHeight + 56 : 0;
+    const usableH = H - inset;
+    // leave screen-space room for labels that hang off the outermost nodes
+    const fitW = Math.max(140, W * 0.84 - 90), fitH = Math.max(140, usableH * 0.76 - 40);
+    scale = Math.min(3.5, Math.max(0.3, Math.min(fitW / spanX, fitH / spanY)));
     panX = -((minX + maxX) / 2) * scale;
-    panY = -((minY + maxY) / 2) * scale;
+    panY = -((minY + maxY) / 2) * scale - inset / 2;
   }
 
   const toggle = document.getElementById("view-toggle");
@@ -328,6 +467,8 @@
     if (graph) {
       resize();
       if (!fitted) { fitToView(); fitted = true; }
+      if (fitted && !rafId) autoFit = true;
+      showTip();
       alpha = Math.max(alpha, 0.6);
       if (!rafId) loop();
     } else if (rafId) {
@@ -368,14 +509,60 @@
 
   /* ---------- legend ---------- */
 
-  const legend = document.querySelector(".graph-legend");
-  document.querySelectorAll("section[data-graph]").forEach((sec) => {
+  function addLegendItem(groupId, label) {
+    const sec = { id: groupId };
     const li = document.createElement("li");
     const dot = document.createElement("i");
     dot.style.setProperty("--dot", GROUP_COLORS[sec.id] || "#888");
-    li.append(dot, sec.dataset.graph);
+    if (groupId === "themes") dot.classList.add("ring");
+    li.append(dot, label);
+    li.tabIndex = 0;
+    li.setAttribute("role", "button");
+    li.classList.toggle("off", hiddenGroups.has(sec.id));
+    li.setAttribute("aria-pressed", String(!hiddenGroups.has(sec.id)));
+    li.title = "Click to hide or show this group";
+    const toggleGroup = () => {
+      const off = !hiddenGroups.has(sec.id);
+      if (off) hiddenGroups.add(sec.id); else hiddenGroups.delete(sec.id);
+      li.classList.toggle("off", off);
+      li.setAttribute("aria-pressed", String(!off));
+      refreshActive();
+      hoverNode = null;
+      alpha = Math.max(alpha, 0.5);
+      autoFit = true;
+      dismissTip();
+    };
+    li.addEventListener("click", toggleGroup);
+    li.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleGroup(); }
+    });
     legend.append(li);
-  });
+  }
+  document.querySelectorAll("section[data-graph]").forEach((sec) => addLegendItem(sec.id, sec.dataset.graph));
+  if (nodes.some((n) => n.kind === "theme")) addLegendItem("themes", "Themes");
+
+  // one-time hint that the legend filters the graph
+  const tip = document.querySelector(".graph-tip");
+  let tipTimer = null;
+  function dismissTip() {
+    if (!tip || tip.hidden) return;
+    tip.hidden = true;
+    clearTimeout(tipTimer);
+    try { localStorage.setItem("graph-tip-seen", "1"); } catch (_) {}
+  }
+  function showTip() {
+    if (!tip) return;
+    let seen = false;
+    try { seen = localStorage.getItem("graph-tip-seen") === "1"; } catch (_) {}
+    if (seen) return;
+    tip.hidden = false;
+    // sit just under the key on wide screens; CSS places it above the key on phones
+    tip.style.top = window.matchMedia("(min-width: 621px)").matches
+      ? `${legend.offsetTop + legend.offsetHeight + 10}px` : "";
+    clearTimeout(tipTimer);
+    tipTimer = setTimeout(dismissTip, 9000);
+  }
+  if (tip) tip.querySelector(".graph-tip-close").addEventListener("click", dismissTip);
 
   /* ---------- init ---------- */
 
