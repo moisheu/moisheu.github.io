@@ -130,21 +130,9 @@ body {
     cursor: pointer;
     color: var(--ink-2);
   }
-  .burger, .burger::before, .burger::after {
-    display: block;
-    width: 1.05rem;
-    height: 2px;
-    background: currentColor;
-    border-radius: 2px;
-    transition: transform 160ms ease, opacity 160ms ease;
-  }
-  .burger { position: relative; }
-  .burger::before, .burger::after { content: ""; position: absolute; left: 0; }
-  .burger::before { top: -6px; }
-  .burger::after { top: 6px; }
-  .site-nav.menu-open .burger { background: transparent; }
-  .site-nav.menu-open .burger::before { transform: translateY(6px) rotate(45deg); }
-  .site-nav.menu-open .burger::after { transform: translateY(-6px) rotate(-45deg); }
+  #menu-toggle .ico-close { display: none; }
+  .site-nav.menu-open #menu-toggle .ico-burger { display: none; }
+  .site-nav.menu-open #menu-toggle .ico-close { display: block; }
 
   #view-toggle {
     order: 2;
