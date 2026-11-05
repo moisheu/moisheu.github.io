@@ -8,14 +8,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261105">
+  <link rel="stylesheet" href="styles.css?v=20261105b">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='30' cy='35' r='12' fill='%231c5cab'/><circle cx='70' cy='60' r='9' fill='%23199e70'/><circle cx='45' cy='78' r='7' fill='%23c98500'/><line x1='30' y1='35' x2='70' y2='60' stroke='%23888' stroke-width='3'/><line x1='70' y1='60' x2='45' y2='78' stroke='%23888' stroke-width='3'/></svg>">
 </head>
 <body>
 
   <header class="site-nav">
     <a class="brand" href="#about">Emi&nbsp;A.&nbsp;Lee</a>
-    <nav aria-label="Sections">
+    <button id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open menu">
+      <span class="burger" aria-hidden="true"></span>
+    </button>
+    <nav id="site-menu" aria-label="Sections">
       <a href="#news">News</a>
       <a href="#publications">Publications</a>
       <a href="#research">Research</a>
@@ -33,6 +36,10 @@
       </svg>
       <span class="toggle-label">Graph</span>
     </button>
+    <div class="mobile-note" role="status" hidden>
+      <span>This site works best on a desktop, especially the graph view.</span>
+      <button type="button" class="mobile-note-close" aria-label="Dismiss">&times;</button>
+    </div>
   </header>
 
   <main id="standard-view">
@@ -341,15 +348,15 @@
   <!-- ============ GRAPH VIEW ============ -->
   <div id="graph-view" hidden>
     <canvas id="graph-canvas" aria-label="Interactive site map. Drag nodes, scroll to zoom, click a node to open its page."></canvas>
-    <div class="graph-hint" aria-hidden="true"><span class="hint-mouse">drag to move · scroll to zoom · click a node to visit</span><span class="hint-touch">drag to move · pinch to zoom · tap a node to visit</span></div>
+    <div class="graph-hint" aria-hidden="true"><span class="hint-mouse">drag to move · scroll to zoom · click a node to visit</span><span class="hint-touch">drag to move · pinch to zoom · tap a node for a preview, tap again to open</span></div>
     <ul class="graph-legend" aria-label="Filter groups"></ul>
-    <div class="graph-tooltip" hidden><strong class="graph-tooltip-title"></strong><span class="graph-tooltip-body"></span></div>
+    <div class="graph-tooltip" hidden><strong class="graph-tooltip-title"></strong><span class="graph-tooltip-body"></span><button type="button" class="graph-tooltip-open" hidden>Open</button></div>
     <div class="graph-tip" role="status" hidden>
-      <span>Tip: hover a node for a preview. Only research, experience, and themes are shown; use the key to add more.</span>
+      <span>Tip: hover or tap a node for a preview. Only research, experience, and themes are shown; use the key to add more.</span>
       <button type="button" class="graph-tip-close" aria-label="Dismiss tip">&times;</button>
     </div>
   </div>
 
-  <script src="main.js?v=20261105"></script>
+  <script src="main.js?v=20261105b"></script>
 </body>
 </html>
