@@ -103,6 +103,10 @@
     <section id="news" data-graph="News">
       <h2>News</h2>
       <ul class="news-list">
+        <li id="news-2026-11-preprint" data-node="RLHF Social Choice preprint (Nov 2026)" data-links="pub-social-choice proj-rlhf-bias">
+          <time datetime="2026-11">Nov 2026</time>
+          <span>Preprint posted: <em>It Depends Who's Asking: Accidental Social Choice in Pooled Reward Models</em>.</span>
+        </li>
         <li id="news-2026-aaai" data-node="AAAI-27 submission (2026)" data-links="pub-aaai27 proj-mental-health">
           <time datetime="2026">2026</time>
           <span>Our paper on interpretable mental health sensing with concept bottleneck models is under review at <em>AAAI-27</em>.</span>
@@ -146,6 +150,11 @@
 
       <h3 class="year">In review</h3>
       <ol class="pub-list">
+        <li id="pub-social-choice" data-node="Social Choice in Reward Models (preprint, 2026)" data-links="proj-rlhf-bias" data-themes="theme-judgment theme-ratings theme-oversight theme-rl">
+          <span class="pub-title">It Depends Who's Asking: Accidental Social Choice in Pooled Reward Models</span>
+          <span class="pub-authors"><strong>Lee, E.</strong></span>
+          <span class="pub-venue">Preprint, submitted to AAAI-27, 2026</span>
+        </li>
         <li id="pub-aaai27" data-node="Mental Health Sensing with CBMs (in review)" data-links="proj-mental-health" data-themes="theme-oversight">
           <span class="pub-title">Interpretable Mental Health Sensing using Concept Bottleneck Models</span>
           <span class="pub-authors">Bedmutha, M., <strong>Lee, E.</strong>, Weibel, N.</span>
@@ -182,10 +191,12 @@
           <p class="project-meta">Independent research · May 2026 – present</p>
           <p>
             Language models trained from human feedback can inherit the errors of their reward
-            models. I built a <strong>full RLHF pipeline</strong> and ran a <strong>pre-registered study</strong> of one such
-            error, length bias, finding that <strong>reward models learn length preferences absent from
-            the human ratings</strong> and that <strong>the bias reverses sign with training composition</strong>.
-            Manuscript in preparation. <a href="https://github.com/moisheu/rlhf-bias-decomp">Code</a>.
+            models. Using pre-registered studies, I investigate two such errors: <strong>pooled reward
+            models act as an unspecified social choice rule</strong>, siding with whichever rating group
+            labeled the question rather than any explicit standard
+            (<a href="#pub-social-choice">preprint</a>); and <strong>reward models learn length preferences
+            absent from the human ratings</strong>, with the bias reversing sign with training composition
+            (manuscript in preparation). <a href="https://github.com/moisheu/rlhf-bias-decomp">Code</a>.
           </p>
         </article>
         <article class="project" id="proj-mental-health" data-node="Mental Health Sensing" data-themes="theme-oversight theme-signals">
